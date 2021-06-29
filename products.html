@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品列表</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<style>
+  
+</style>
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="text-end mt-4">
+        <!-- modalProduct(isNew:true)為建立 -->
+        <button class="btn btn-primary" @click="modalProduct('new')">
+          建立新的產品
+        </button>
+      </div>
+      <table class="table mt-4">
+        <thead>
+          <tr>
+            <th width="120">分類</th>
+            <th>產品名稱</th>
+            <th width="120">原價</th>
+            <th width="120">售價</th>
+            <th width="100">是否啟用</th>
+            <th width="120">編輯</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="product in products" :key="product.id">
+            <td>{{ product.category }}</td>
+            <td> {{ product.title }} </td>
+            <td class="text-end">
+              {{ product.origin_price }}
+            </td>
+            <td class="text-end">
+              {{ product.price }}
+            </td>
+            <td>
+              <span v-if="product.is_enabled" class="text-success">啟用</span>
+              <span v-else class="text-danger">未啟用</span>
+            </td>
+            <td>
+              <div class="btn-group">
+                <!-- modalProduct(isNew:false)為編輯 -->
+                <!-- 代入待編輯的該產品參數 product -->
+                <button class="btn btn-outline-primary btn-sm" @click="modalProduct('edit', product)">
+                  編輯
+                </button>
+                <button class="btn btn-outline-danger btn-sm" @click="modalProduct('del',product)">刪除</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-center mt-5">
+      <pagination :page="pagination" @get-data="getData"></pagination>
+    </div>
+    <!-- Modal -->
+    <!-- html元件載入只能使用小寫，使用 - 隔開-->
+    <!-- 內層temp-product 綁定外層 tempProduct-->
+    <!-- 內層update-product 觸發外層事件 updateProduct-->
+    <product-modal :temp-product="tempProduct" @update-product="updateProduct"></product-modal>
+    <!--delModal-->
+    <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
+        aria-labelledby="delProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content border-0">
+            <div class="modal-header bg-danger text-white">
+              <h5 id="delProductModalLabel" class="modal-title">
+                <span>刪除商品</span>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              是否刪除
+              <strong class="text-danger">{{ tempProduct.title }}</strong> 商品(刪除後將無法恢復)。
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                取消
+              </button>
+              <button type="button" class="btn btn-danger" @click="delProduct">
+                確認刪除
+              </button>
+            </div>
+          </div>
+        </div>
+    </div> 
+
+  </div>
+</body>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+<script type="module" src="./js/products.js"></script>  
+</html>
